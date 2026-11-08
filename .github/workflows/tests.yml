@@ -1,0 +1,21 @@
+name: Testes dos bots
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        bot: [discord-mod-bot, discord-suggestions-bot, discord-reminder-bot]
+        python: ['3.11', '3.12', '3.13']
+    defaults:
+      run:
+        working-directory: ${{ matrix.bot }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
